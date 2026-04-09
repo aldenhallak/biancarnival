@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <title>BIANCARNIVAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@1,700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <svg style="position:fixed;width:0;height:0" aria-hidden="true">
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+  </svg>
+</head>
+
+<body>
+  <div class="grain"></div>
+  <div class="halftone"></div>
+  <div class="cursor" id="cursor">
+    <div class="cursor-dot"></div>
+  </div>
+
+  <main class="stage" id="stage">
+
+    <!-- TITLE -->
+    <h1 class="title" id="title">
+      <span class="ch" style="--c:#ff3333;--r:-4deg">B</span><span class="ch" style="--c:#f0e8d8;--r:2deg">I</span><span
+        class="ch" style="--c:#3366ff;--r:-1deg">A</span><span class="ch" style="--c:#ffcc00;--r:3deg">N</span><span
+        class="ch" style="--c:#f0e8d8;--r:-2deg">C</span><span class="ch" style="--c:#33cc66;--r:1deg">A</span><span
+        class="ch ch--o" style="--c:#ff3333;--r:3deg">R</span><span class="ch ch--o"
+        style="--c:#ffcc00;--r:-2deg">N</span><span class="ch ch--o" style="--c:#3366ff;--r:1deg">I</span><span
+        class="ch ch--o" style="--c:#ff3333;--r:-3deg">V</span><span class="ch ch--o"
+        style="--c:#33cc66;--r:2deg">A</span><span class="ch ch--o" style="--c:#ffcc00;--r:-1deg">L</span>
+    </h1>
+    <p class="subtitle"><em>hi bianca</em></p>
+
+    <!-- DECO -->
+    <div class="deco d-stamp" data-depth="0.06">ADMIT ONE</div>
+    <div class="deco d-star1" data-depth="0.08">★</div>
+    <div class="deco d-star2" data-depth="0.05">✦</div>
+    <div class="deco d-star3" data-depth="0.09">☆</div>
+    <svg class="deco d-squig" data-depth="0.07" viewBox="0 0 200 16">
+      <path
+        d="M0,8Q10,0 20,8Q30,16 40,8Q50,0 60,8Q70,16 80,8Q90,0 100,8Q110,16 120,8Q130,0 140,8Q150,16 160,8Q170,0 180,8Q190,16 200,8"
+        fill="none" stroke="#ff3333" stroke-width="2" />
+    </svg>
+    <svg class="deco d-squig2" data-depth="0.04" viewBox="0 0 160 16">
+      <path
+        d="M0,8Q8,0 16,8Q24,16 32,8Q40,0 48,8Q56,16 64,8Q72,0 80,8Q88,16 96,8Q104,0 112,8Q120,16 128,8Q136,0 144,8Q152,16 160,8"
+        fill="none" stroke="#ffcc00" stroke-width="2" />
+    </svg>
+    <div class="deco d-stepup" data-depth="0.03">STEP RIGHT UP</div>
+
+    <!-- BOXES -->
+    <div class="boxes-scroll" id="boxes-scroll">
+      <article class="box b-about" data-depth="0.05" data-box="about" style="--rot:-3deg">
+        <span class="b-n">01</span><span class="b-t">ABOUT</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-date" data-depth="0.04" data-box="date" style="--rot:2deg">
+        <span class="b-n">02</span><span class="b-t">DATE</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-loc" data-depth="0.06" data-box="loc" style="--rot:-1.5deg">
+        <span class="b-n">03</span><span class="b-t">LOCATION</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-lineup" data-depth="0.03" data-box="lineup" style="--rot:0.8deg">
+        <span class="b-n">04</span><span class="b-t">LINEUP</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-faq" data-depth="0.07" data-box="faq" style="--rot:-2.5deg">
+        <span class="b-n">05</span><span class="b-t">FAQ</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-tix" data-depth="0.05" data-box="tix" style="--rot:1.5deg">
+        <span class="b-n">06</span><span class="b-t">TICKETS</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-rules" data-depth="0.04" data-box="rules" style="--rot:-1deg">
+        <span class="b-n">07</span><span class="b-t">RULES</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-contact" data-depth="0.06" data-box="contact" style="--rot:2.5deg">
+        <span class="b-n">08</span><span class="b-t">CONTACT</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+      <article class="box b-surprise" data-depth="0.08" data-box="surprise" style="--rot:0deg">
+        <span class="b-n">??</span><span class="b-t">???</span>
+        <div class="b-data">
+          <h2>poop</h2>
+          <p>poop</p>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- OVERLAY -->
+  <div class="ov" id="ov">
+    <div class="ov-card" id="ov-card"></div>
+    <button class="ov-x" id="ov-x">✕</button>
+  </div>
+
+  <p class="foot">© 2026 BIANCARNIVAL · No refunds</p>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
