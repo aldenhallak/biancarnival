@@ -41,6 +41,9 @@
   // Buy button
   gsap.set('.buy-btn',{opacity:0,y:20});
   tl.to('.buy-btn',{opacity:1,y:0,duration:.5,ease:'power2.out'},'-=.1');
+  // Calendar button
+  gsap.set('.cal-btn',{opacity:0,y:10});
+  tl.to('.cal-btn',{opacity:1,y:0,duration:.4,ease:'power2.out'},'-=.2');
 
   // CHAR HOVER
   document.querySelectorAll('.ch').forEach(c=>{
