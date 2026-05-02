@@ -1,6 +1,43 @@
 (function(){
   'use strict';
 
+  // === SOUND FX (Web Audio API) ===
+  let audioCtx;
+  function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+
+  function playWoosh(){
+    const ctx=getCtx();
+    const dur=0.35;
+    // Noise buffer
+    const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1);
+    const src=ctx.createBufferSource();src.buffer=buf;
+    // Bandpass filter with frequency sweep
+    const filt=ctx.createBiquadFilter();filt.type='bandpass';filt.Q.value=2;
+    filt.frequency.setValueAtTime(800,ctx.currentTime);
+    filt.frequency.exponentialRampToValueAtTime(200,ctx.currentTime+dur);
+    // Gain envelope
+    const gain=ctx.createGain();
+    gain.gain.setValueAtTime(0.15,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+    src.connect(filt);filt.connect(gain);gain.connect(ctx.destination);
+    src.start();src.stop(ctx.currentTime+dur);
+  }
+
+  function playTap(){
+    const ctx=getCtx();
+    const dur=0.04;
+    const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.008));
+    const src=ctx.createBufferSource();src.buffer=buf;
+    const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800;
+    const gain=ctx.createGain();gain.gain.value=0.25;
+    src.connect(hp);hp.connect(gain);gain.connect(ctx.destination);
+    src.start();src.stop(ctx.currentTime+dur);
+  }
+
   // CURSOR
   const cur=document.getElementById('cursor');
   let mx=0,my=0;
@@ -18,8 +55,9 @@
   // Big faces drop in
   const bigFaces=gsap.utils.toArray('.big-face');
   bigFaces.forEach((f,i)=>{
-    gsap.set(f,{opacity:0,y:-60,scale:.6});
-    tl.to(f,{opacity:1,y:0,scale:1,duration:.5,ease:'back.out(1.6)'},0.15+i*.08);
+    const isFlipped=f.classList.contains('face--inv');
+    gsap.set(f,{opacity:0,y:-60,scaleX:isFlipped?-.6:.6,scaleY:.6});
+    tl.to(f,{opacity:1,y:0,scaleX:isFlipped?-1:1,scaleY:1,duration:.5,ease:'back.out(1.6)'},0.15+i*.08);
   });
   // Boxes pop in from random directions
   const boxes=gsap.utils.toArray('.box');
@@ -33,8 +71,11 @@
   gsap.set('.deco',{opacity:0});
   tl.to('.deco',{opacity:el=>parseFloat(getComputedStyle(el).opacity)||.3,stagger:.05,duration:.4},'-=.3');
   // Faces pop in
-  gsap.set('.face',{opacity:0,scale:0});
-  tl.to('.face',{opacity:1,scale:1,stagger:.06,duration:.4,ease:'back.out(2)'},'-=.2');
+  document.querySelectorAll('.face').forEach(f=>{
+    const isFlipped=f.classList.contains('face--inv');
+    gsap.set(f,{opacity:0,scaleX:0,scaleY:0});
+    tl.to(f,{opacity:1,scaleX:isFlipped?-1:1,scaleY:1,stagger:.06,duration:.4,ease:'back.out(2)'},'-=.2');
+  });
   // Event date
   gsap.set('.event-date',{opacity:0,y:10});
   tl.to('.event-date',{opacity:.6,y:0,duration:.4,ease:'power2.out'},'-=.15');
@@ -51,12 +92,28 @@
     c.addEventListener('mouseleave',()=>gsap.to(c,{scale:1,y:0,duration:.4,ease:'elastic.out(1,.4)'}));
   });
 
-  // FACE CLICK SPIN
+  // FACE SPIN — physics simulation
+  const FRICTION=0.985; // per-frame decay
+  const MIN_VEL=0.3;    // deg/frame threshold to stop
   document.querySelectorAll('.face,.big-face').forEach(f=>{
+    let vel=0, spinning=false;
+    function tick(){
+      vel*=FRICTION;
+      const cur=gsap.getProperty(f,'rotation');
+      gsap.set(f,{rotation:cur+vel});
+      if(Math.abs(vel)>MIN_VEL){
+        requestAnimationFrame(tick);
+      } else {
+        spinning=false;
+      }
+    }
     f.addEventListener('click',e=>{
       e.stopPropagation();
-      gsap.to(f,{rotation:'+=360',scale:1.2,duration:.6,ease:'power2.inOut',
-        onComplete:()=>gsap.to(f,{scale:1,duration:.3,ease:'elastic.out(1,.5)'})});
+      const dir=Math.random()>.5?1:-1;
+      vel+=dir*(800+Math.random()*1200);
+      vel=Math.min(Math.max(vel,-40),40);
+      if(!spinning){spinning=true;requestAnimationFrame(tick);}
+      playWoosh();
     });
   });
 
@@ -105,6 +162,7 @@
       if(!data)return;
       ovCard.innerHTML=data.innerHTML;
       ov.classList.add('active');
+      playTap();
     });
   });
 

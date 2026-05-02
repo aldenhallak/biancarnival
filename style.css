@@ -40,31 +40,16 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
   transform:rotate(var(--br,0deg));pointer-events:auto;cursor:pointer;
   filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));
   transition:filter .3s}
-.big-face:hover{filter:drop-shadow(0 8px 28px rgba(0,0,0,.7));
-  animation:face-wobble .5s ease}
+.big-face:hover{filter:drop-shadow(0 8px 28px rgba(0,0,0,.7))}
+
 
 /* SMALL FACES */
 .faces{position:absolute;top:calc(46% + clamp(42px,5.5vw,64px));left:50%;transform:translateX(-50%);
   z-index:10;display:flex;gap:clamp(4px,1.2vw,12px);pointer-events:none}
 .face{width:clamp(40px,5.5vw,70px);height:auto;transform:rotate(var(--fr,0deg));
   filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));pointer-events:auto;cursor:pointer}
-.face:hover{animation:face-spin .6s ease}
+.face:hover{cursor:grab}
 
-@keyframes face-spin{
-  0%{transform:rotate(var(--fr,0deg)) scale(1)}
-  25%{transform:rotate(calc(var(--fr,0deg) + 15deg)) scale(1.15)}
-  50%{transform:rotate(calc(var(--fr,0deg) - 10deg)) scale(1.1)}
-  75%{transform:rotate(calc(var(--fr,0deg) + 5deg)) scale(1.05)}
-  100%{transform:rotate(var(--fr,0deg)) scale(1)}
-}
-@keyframes face-wobble{
-  0%{transform:rotate(var(--br,0deg)) scale(1)}
-  20%{transform:rotate(calc(var(--br,0deg) + 12deg)) scale(1.08)}
-  40%{transform:rotate(calc(var(--br,0deg) - 8deg)) scale(1.12)}
-  60%{transform:rotate(calc(var(--br,0deg) + 5deg)) scale(1.06)}
-  80%{transform:rotate(calc(var(--br,0deg) - 3deg)) scale(1.02)}
-  100%{transform:rotate(var(--br,0deg)) scale(1)}
-}
 
 /* EVENT DATE */
 .event-date{position:absolute;top:calc(46% + clamp(88px,11vw,135px));left:50%;transform:translateX(-50%);
@@ -230,12 +215,12 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
     display:flex!important;flex:1 1 auto;
     overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
-    padding:8px 18vw;align-items:flex-start;gap:0;
+    padding:8px 18vw;align-items:stretch;gap:0;
     pointer-events:auto!important}
   .boxes-scroll::-webkit-scrollbar{display:none}
 
   .box{position:relative!important;top:auto!important;left:auto!important;right:auto!important;
-    bottom:auto!important;flex:0 0 68vw;min-height:34vh;max-height:300px;
+    bottom:auto!important;flex:0 0 68vw;
     scroll-snap-align:center;
     display:flex!important;flex-direction:column;justify-content:center;align-items:flex-start;
     margin:0 -8px;padding:28px 24px;
