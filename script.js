@@ -30,7 +30,7 @@
     if (curtainSfx) {
       const isMobile = window.innerWidth <= 700;
       curtainSfx.volume = 0.25;
-      curtainSfx.playbackRate = isMobile ? 1.6 : 0.8;
+      curtainSfx.playbackRate = isMobile ? 1.2 : 0.8;
       curtainSfx.play().catch(() => { });
     }
   }
@@ -38,7 +38,7 @@
   function playReveal() {
     const ctx = getCtx();
     const isMobile = window.innerWidth <= 700;
-    const dur = isMobile ? 1.1 : 2.2;
+    const dur = isMobile ? 1.47 : 2.2;
     const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
     const data = buf.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1);
@@ -50,7 +50,7 @@
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + (isMobile ? 0.1 : 0.2));
+    gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + (isMobile ? 0.13 : 0.2));
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
 
     src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
@@ -113,8 +113,8 @@
   window._onCurtainOpen = function () {
     const isMobile = window.innerWidth <= 700;
     playReveal();
-    setTimeout(startMusic, isMobile ? 500 : 1000);
-    gsap.to(curtain, { opacity: 0, duration: isMobile ? .25 : .5, onComplete: () => curtain.remove() });
+    setTimeout(startMusic, isMobile ? 667 : 1000);
+    gsap.to(curtain, { opacity: 0, duration: isMobile ? 0.33 : .5, onComplete: () => curtain.remove() });
     runEntrance();
   };
 
@@ -153,7 +153,7 @@
   // Title is already visible behind curtains — only animate everything else
   function runEntrance() {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    if (window.innerWidth <= 700) tl.timeScale(2);
+    if (window.innerWidth <= 700) tl.timeScale(1.5);
     
     // Move title up on mobile
     if (window.innerWidth <= 700) {

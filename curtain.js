@@ -205,7 +205,7 @@
     opening=true;
 
     const isMobile = window.innerWidth <= 700;
-    const speedFactor = isMobile ? 2 : 1;
+    const speedFactor = isMobile ? 1.5 : 1;
 
     // Unpin inner columns (near center seam) first, then progressively outward
     const innerCols=Math.floor(COLS*0.4);
