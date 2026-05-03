@@ -328,6 +328,25 @@
       typeWriter(r);
     }
 
+    const juggleReactions = [
+      "You're juggling me!",
+      "Look at you go!",
+      "Wheee!",
+      "Higher!",
+      "Don't drop me!"
+    ];
+
+    let lastJuggleReactionTime = 0;
+    const JUGGLE_REACTION_COOLDOWN = 1500;
+
+    function showJuggleReaction() {
+      if (isTyping) return;
+      if (Date.now() - lastJuggleReactionTime < JUGGLE_REACTION_COOLDOWN) return;
+      lastJuggleReactionTime = Date.now();
+      const r = juggleReactions[Math.floor(Math.random() * juggleReactions.length)];
+      typeWriter(r);
+    }
+
     bubble.addEventListener('click', (e) => {
       e.stopPropagation();
       progressDialog();
@@ -629,6 +648,7 @@
 
         // Cooldown only applies to spawning NEW heads
         if (!hasExisting && (Date.now() - lastJuggleTime < JUGGLE_COOLDOWN)) return;
+        showJuggleReaction();
 
         if (!hasExisting) {
           lastJuggleTime = Date.now();
