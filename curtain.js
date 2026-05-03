@@ -206,6 +206,7 @@
 
     const isMobile = window.innerWidth <= 700;
     const speedFactor = isMobile ? 1.5 : 1;
+    const forceMultiplier = isMobile ? 2.5 : 1;
 
     // Unpin inner columns (near center seam) first, then progressively outward
     const innerCols=Math.floor(COLS*0.4);
@@ -218,8 +219,8 @@
           const p=panel.particles[0][c];
           p.pinned=false;
           // Apply outward + upward force
-          p.force.x=dir*0.018;
-          p.force.y=0.0036;
+          p.force.x=dir*0.018 * forceMultiplier;
+          p.force.y=0.0036 * (isMobile ? 1.5 : 1);
         },delay);
       }
     });
@@ -234,7 +235,7 @@
           for(let c=0;c<=COLS;c++){
             const p=panel.particles[r][c];
             if(!p.pinned){
-              p.force.x+=dir*0.0006*(1-frame/100) * speedFactor;
+              p.force.x+=dir*0.0006*(1-frame/100) * speedFactor * forceMultiplier;
             }
           }
         }
