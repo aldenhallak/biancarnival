@@ -25,6 +25,55 @@
     src.start(); src.stop(ctx.currentTime + dur);
   }
 
+  function playBoing() {
+    const ctx = getCtx();
+    const t = ctx.currentTime;
+    const dur = 0.7;
+    
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    // Add random variance to base pitch
+    osc.frequency.setValueAtTime(70 + Math.random() * 20, t);
+    
+    // Pitch wobble (spring vibrating)
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    // Randomize initial wobble speed
+    lfo.frequency.setValueAtTime(15 + Math.random() * 8, t);
+    lfo.frequency.exponentialRampToValueAtTime(5, t + dur);
+    
+    const lfoGain = ctx.createGain();
+    // Randomize pitch deviation depth
+    lfoGain.gain.setValueAtTime(8 + Math.random() * 6, t);
+    lfoGain.gain.exponentialRampToValueAtTime(1, t + dur);
+    
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+    
+    // Twang filter
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'bandpass';
+    // Randomize filter resonance and sweep frequencies
+    filt.Q.value = 10 + Math.random() * 4;
+    filt.frequency.setValueAtTime(300 + Math.random() * 150, t);
+    filt.frequency.exponentialRampToValueAtTime(1200 + Math.random() * 600, t + 0.05);
+    filt.frequency.exponentialRampToValueAtTime(250 + Math.random() * 100, t + dur);
+    
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.5, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
+    
+    osc.connect(filt);
+    filt.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.start(t);
+    lfo.start(t);
+    osc.stop(t + dur);
+    lfo.stop(t + dur);
+  }
+
   function playCurtain() {
     const curtainSfx = document.getElementById('curtain-sfx');
     if (curtainSfx) {
@@ -526,7 +575,7 @@
           ease: 'elastic.out(1, 0.4)'
         }, 0.73);
 
-        playWoosh();
+        playBoing();
       }
 
       handLeft.addEventListener('click', e => {
