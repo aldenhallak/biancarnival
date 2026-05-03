@@ -56,10 +56,6 @@
     musicStarted=true;
     bgMusic.play().catch(()=>{});
   }
-  // Start on first interaction (browser autoplay policy)
-  document.addEventListener('click',startMusic,{once:true});
-  document.addEventListener('touchstart',startMusic,{once:true});
-  // Mute toggle
   muteBtn.addEventListener('click',e=>{
     e.stopPropagation();
     if(!musicStarted){startMusic();}
@@ -67,17 +63,47 @@
     muteBtn.textContent=bgMusic.muted?'🔇':'🔊';
   });
 
-  // ENTRANCE — staggered
+  // === CURTAIN ===
+  const curtain=document.getElementById('curtain');
+
+  curtain.addEventListener('click',function openCurtain(){
+    curtain.removeEventListener('click',openCurtain);
+    curtain.style.cursor='default';
+    startMusic();
+    // Fade prompt
+    gsap.to('#curtain-prompt',{opacity:0,duration:.3});
+    // Trigger Three.js cloth physics
+    if(window._openCurtains)window._openCurtains();
+  });
+
+  // Called by curtain.js when cloth has settled
+  window._onCurtainOpen=function(){
+    gsap.to(curtain,{opacity:0,duration:.5,onComplete:()=>curtain.remove()});
+    runEntrance();
+  };
+
+  // === HIDE EVERYTHING EXCEPT TITLE (immediately, before curtains open) ===
+  gsap.set('.subtitle',{opacity:0});
+  gsap.set('.big-face',{opacity:0});
+  gsap.set('.box',{opacity:0});
+  gsap.set('.deco',{opacity:0});
+  gsap.set('.face',{opacity:0});
+  gsap.set('.event-date',{opacity:0});
+  gsap.set('.buy-btn',{opacity:0});
+  gsap.set('.cal-btn',{opacity:0});
+  gsap.set('.foot',{opacity:0});
+
+  // === ENTRANCE (runs after curtain) ===
+  // Title is already visible behind curtains — only animate everything else
+  function runEntrance(){
   const tl=gsap.timeline({defaults:{ease:'power3.out'}});
-  // Title chars
-  gsap.set('.ch',{opacity:0,y:20});
-  tl.to('.ch',{opacity:1,y:0,stagger:.03,duration:.5,delay:.2});
-  tl.to('.subtitle',{opacity:.5,duration:.5},'-=.2');
+  // Subtitle fades in
+  tl.to('.subtitle',{opacity:.5,duration:.5,delay:.1});
   // Big faces drop in
   const bigFaces=gsap.utils.toArray('.big-face');
   bigFaces.forEach((f,i)=>{
     const isFlipped=f.classList.contains('face--inv');
-    gsap.set(f,{opacity:0,y:-60,scaleX:isFlipped?-.6:.6,scaleY:.6});
+    gsap.set(f,{y:-60,scaleX:isFlipped?-.6:.6,scaleY:.6});
     tl.to(f,{opacity:1,y:0,scaleX:isFlipped?-1:1,scaleY:1,duration:.5,ease:'back.out(1.6)'},0.15+i*.08);
   });
   // Boxes pop in from random directions
@@ -85,27 +111,28 @@
   boxes.forEach((b,i)=>{
     const angle=Math.random()*Math.PI*2;
     const dist=80+Math.random()*60;
-    gsap.set(b,{opacity:0,x:Math.cos(angle)*dist,y:Math.sin(angle)*dist,scale:.7});
+    gsap.set(b,{x:Math.cos(angle)*dist,y:Math.sin(angle)*dist,scale:.7});
     tl.to(b,{opacity:1,x:0,y:0,scale:1,duration:.6,ease:'back.out(1.4)'},0.4+i*.06);
   });
   // Decos fade in
-  gsap.set('.deco',{opacity:0});
   tl.to('.deco',{opacity:el=>parseFloat(getComputedStyle(el).opacity)||.3,stagger:.05,duration:.4},'-=.3');
   // Faces pop in
   document.querySelectorAll('.face').forEach(f=>{
     const isFlipped=f.classList.contains('face--inv');
-    gsap.set(f,{opacity:0,scaleX:0,scaleY:0});
+    gsap.set(f,{scaleX:0,scaleY:0});
     tl.to(f,{opacity:1,scaleX:isFlipped?-1:1,scaleY:1,stagger:.06,duration:.4,ease:'back.out(2)'},'-=.2');
   });
   // Event date
-  gsap.set('.event-date',{opacity:0,y:10});
+  gsap.set('.event-date',{y:10});
   tl.to('.event-date',{opacity:.6,y:0,duration:.4,ease:'power2.out'},'-=.15');
   // Buy button
-  gsap.set('.buy-btn',{opacity:0,y:20});
+  gsap.set('.buy-btn',{y:20});
   tl.to('.buy-btn',{opacity:1,y:0,duration:.5,ease:'power2.out'},'-=.1');
   // Calendar button
-  gsap.set('.cal-btn',{opacity:0,y:10});
+  gsap.set('.cal-btn',{y:10});
   tl.to('.cal-btn',{opacity:1,y:0,duration:.4,ease:'power2.out'},'-=.2');
+  // Footer
+  tl.to('.foot',{opacity:.3,duration:.4},'-=.1');
 
   // CHAR HOVER
   document.querySelectorAll('.ch').forEach(c=>{
@@ -199,5 +226,6 @@
       el.addEventListener('mouseleave',()=>cur.querySelector('.cursor-dot').style.transform='translate(-50%,-50%) scale(1)');
     });
   }
+  } // end runEntrance
 
 })();
