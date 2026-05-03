@@ -204,12 +204,15 @@
     if(opening)return;
     opening=true;
 
+    const isMobile = window.innerWidth <= 700;
+    const speedFactor = isMobile ? 2 : 1;
+
     // Unpin inner columns (near center seam) first, then progressively outward
     const innerCols=Math.floor(COLS*0.4);
     [leftPanel,rightPanel].forEach((panel,pi)=>{
       const dir=pi===0?-1:1;
       for(let c=0;c<=COLS;c++){
-        const delay=c<innerCols?c*50:(innerCols*50+(c-innerCols)*25);
+        const delay=(c<innerCols?c*50:(innerCols*50+(c-innerCols)*25)) / speedFactor;
         setTimeout(()=>{
           // Unpin this column's top particle
           const p=panel.particles[0][c];
@@ -224,14 +227,14 @@
     // Apply continuous outward force during opening
     let frame=0;
     const pushInterval=setInterval(()=>{
-      frame++;
+      frame += speedFactor;
       [leftPanel,rightPanel].forEach((panel,pi)=>{
         const dir=pi===0?-1:1;
         for(let r=0;r<Math.min(5,ROWS);r++){
           for(let c=0;c<=COLS;c++){
             const p=panel.particles[r][c];
             if(!p.pinned){
-              p.force.x+=dir*0.0006*(1-frame/100);
+              p.force.x+=dir*0.0006*(1-frame/100) * speedFactor;
             }
           }
         }
@@ -242,7 +245,7 @@
         setTimeout(()=>{
           opened=true;
           if(window._onCurtainOpen)window._onCurtainOpen();
-        },600);
+        },600 / speedFactor);
       }
     },16);
   }
