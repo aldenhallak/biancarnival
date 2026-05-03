@@ -284,7 +284,7 @@
 
     function closeOv() { ov.classList.remove('active') }
     ovX.addEventListener('click', closeOv);
-    ov.addEventListener('click', e => { if (e.target === ov || e.target === ov.querySelector('::before')) closeOv() });
+    ov.addEventListener('click', e => { if (e.target === ov) closeOv() });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOv() });
 
     // MOBILE SCROLL CENTER CARD
