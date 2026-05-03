@@ -209,14 +209,14 @@
     [leftPanel,rightPanel].forEach((panel,pi)=>{
       const dir=pi===0?-1:1;
       for(let c=0;c<=COLS;c++){
-        const delay=c<innerCols?c*60:(innerCols*60+(c-innerCols)*30);
+        const delay=c<innerCols?c*50:(innerCols*50+(c-innerCols)*25);
         setTimeout(()=>{
           // Unpin this column's top particle
           const p=panel.particles[0][c];
           p.pinned=false;
           // Apply outward + upward force
-          p.force.x=dir*0.015;
-          p.force.y=0.003;
+          p.force.x=dir*0.018;
+          p.force.y=0.0036;
         },delay);
       }
     });
@@ -231,18 +231,18 @@
           for(let c=0;c<=COLS;c++){
             const p=panel.particles[r][c];
             if(!p.pinned){
-              p.force.x+=dir*0.0005*(1-frame/120);
+              p.force.x+=dir*0.0006*(1-frame/100);
             }
           }
         }
       });
-      if(frame>120){
+      if(frame>100){
         clearInterval(pushInterval);
         // Signal completion after fabric settles
         setTimeout(()=>{
           opened=true;
           if(window._onCurtainOpen)window._onCurtainOpen();
-        },800);
+        },600);
       }
     },16);
   }
