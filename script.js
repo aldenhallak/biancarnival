@@ -211,12 +211,17 @@
     });
 
     // FACE SPIN — physics simulation
-    const FRICTION = 0.985; // per-frame decay
     const MIN_VEL = 0.3;    // deg/frame threshold to stop
-    document.querySelectorAll('.face,.big-face').forEach(f => {
+    document.querySelectorAll('.face,.big-face,.ch').forEach(f => {
+      const isLetter = f.classList.contains('ch');
+      const friction = isLetter ? 0.94 : 0.985;
+      const maxVel = isLetter ? 20 : 40;
+      const baseImpulse = isLetter ? 300 : 800;
+      const randImpulse = isLetter ? 600 : 1200;
+
       let vel = 0, spinning = false;
       function tick() {
-        vel *= FRICTION;
+        vel *= friction;
         const cur = gsap.getProperty(f, 'rotation');
         gsap.set(f, { rotation: cur + vel });
         if (Math.abs(vel) > MIN_VEL) {
@@ -228,8 +233,8 @@
       f.addEventListener('click', e => {
         e.stopPropagation();
         const dir = Math.random() > .5 ? 1 : -1;
-        vel += dir * (800 + Math.random() * 1200);
-        vel = Math.min(Math.max(vel, -40), 40);
+        vel += dir * (baseImpulse + Math.random() * randImpulse);
+        vel = Math.min(Math.max(vel, -maxVel), maxVel);
         if (!spinning) { spinning = true; requestAnimationFrame(tick); }
         playWoosh();
       });
