@@ -41,16 +41,16 @@
     const data = buf.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1);
     const src = ctx.createBufferSource(); src.buffer = buf;
-    
+
     const filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.Q.value = 0.5;
     filt.frequency.setValueAtTime(300, ctx.currentTime);
     filt.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + dur);
-    
+
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.001, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.2);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    
+
     src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
     src.start(); src.stop(ctx.currentTime + dur);
   }
@@ -110,7 +110,7 @@
   // Called by curtain.js when cloth has settled
   window._onCurtainOpen = function () {
     playReveal();
-    startMusic();
+    setTimeout(startMusic, 1000);
     gsap.to(curtain, { opacity: 0, duration: .5, onComplete: () => curtain.remove() });
     runEntrance();
   };
