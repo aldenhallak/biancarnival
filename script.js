@@ -407,6 +407,145 @@
         el.addEventListener('mouseleave', () => cur.querySelector('.cursor-dot').style.transform = 'translate(-50%,-50%) scale(1)');
       });
     }
+
+    // HAND JUGGLE
+    const handLeft = document.querySelector('.hand-left');
+    const handRight = document.querySelector('.hand-right');
+    if (handLeft && handRight && isFine) {
+      
+      // Dedicated preview faces for hover so they don't teleport away
+      const hoverFaceL = document.createElement('img');
+      hoverFaceL.src = 'biancasface.png';
+      hoverFaceL.className = 'juggle-face';
+      document.body.appendChild(hoverFaceL);
+      gsap.set(hoverFaceL, { opacity: 0, scale: 0.8 });
+
+      const hoverFaceR = document.createElement('img');
+      hoverFaceR.src = 'biancasface.png';
+      hoverFaceR.className = 'juggle-face';
+      document.body.appendChild(hoverFaceR);
+      gsap.set(hoverFaceR, { opacity: 0, scale: 0.8 });
+
+      function getPalmPos(hand) {
+        const rect = hand.getBoundingClientRect();
+        return { x: rect.left + rect.width / 2, y: rect.top + rect.height * 0.38 };
+      }
+
+      function showHover(hand, faceEl) {
+        const pos = getPalmPos(hand);
+        gsap.to(faceEl, {
+          left: pos.x - 27, top: pos.y - 27,
+          opacity: 0.8, scale: 1, rotation: 0,
+          duration: 0.25, ease: 'back.out(2)', overwrite: true
+        });
+      }
+
+      function hideHover(faceEl) {
+        gsap.to(faceEl, { opacity: 0, scale: 0.6, duration: 0.2, overwrite: true });
+      }
+
+      handLeft.addEventListener('mouseenter', () => showHover(handLeft, hoverFaceL));
+      handLeft.addEventListener('mouseleave', () => hideHover(hoverFaceL));
+      handRight.addEventListener('mouseenter', () => showHover(handRight, hoverFaceR));
+      handRight.addEventListener('mouseleave', () => hideHover(hoverFaceR));
+
+      const restingFaces = { left: [], right: [] };
+
+      function juggleTo(fromHand, toHand, toSide) {
+        const fromSide = toSide === 'right' ? 'left' : 'right';
+        let face;
+        let startY;
+        
+        if (restingFaces[fromSide].length > 0) {
+          // Toss an existing face that's already in the hand
+          face = restingFaces[fromSide].pop();
+          startY = parseFloat(face.style.top) || (getPalmPos(fromHand).y - 27);
+          gsap.killTweensOf(face);
+        } else {
+          // Spawn a new permanent face
+          face = document.createElement('img');
+          face.src = 'biancasface.png';
+          face.className = 'juggle-face';
+          document.body.appendChild(face);
+          
+          const from = getPalmPos(fromHand);
+          startY = from.y - 27;
+          gsap.set(face, { left: from.x - 27, top: startY, opacity: 1, scale: 1 });
+        }
+
+        const to = getPalmPos(toHand);
+        
+        // Scatter landing position so they pile up chaotically
+        const scatterX = (Math.random() - 0.5) * 60;
+        const scatterY = (Math.random() - 0.5) * 60;
+        const finalX = to.x - 27 + scatterX;
+        const finalY = to.y - 27 + scatterY;
+        const arcHeight = 280 + Math.random() * 120;
+
+        const tl = gsap.timeline({
+          onComplete: () => {
+            restingFaces[toSide].push(face);
+          }
+        });
+
+        // Horizontal movement
+        tl.to(face, {
+          left: finalX,
+          duration: 0.7,
+          ease: 'none'
+        }, 0);
+
+        // Vertical arc: up then down
+        tl.to(face, {
+          top: Math.min(startY, finalY) - arcHeight,
+          duration: 0.35,
+          ease: 'power2.out'
+        }, 0);
+        tl.to(face, {
+          top: finalY,
+          duration: 0.35,
+          ease: 'power2.in'
+        }, 0.35);
+
+        // Spin
+        tl.to(face, {
+          rotation: `+=${(toSide === 'right' ? 1 : -1) * (360 + Math.random() * 360)}`,
+          duration: 0.7,
+          ease: 'power1.inOut'
+        }, 0);
+
+        // Little bounce on landing
+        tl.to(face, {
+          scale: 1.2,
+          duration: 0.08,
+          ease: 'power2.out'
+        }, 0.65);
+        tl.to(face, {
+          scale: 1,
+          duration: 0.2,
+          ease: 'elastic.out(1, 0.4)'
+        }, 0.73);
+
+        playWoosh();
+      }
+
+      handLeft.addEventListener('click', e => {
+        e.stopPropagation();
+        juggleTo(handLeft, handRight, 'right');
+      });
+
+      handRight.addEventListener('click', e => {
+        e.stopPropagation();
+        juggleTo(handRight, handLeft, 'left');
+      });
+
+      // Add hand hover states for custom cursor
+      [handLeft, handRight].forEach(el => {
+        el.addEventListener('mouseenter', () => cur.querySelector('.cursor-dot').style.transform = 'translate(-50%,-50%) scale(2.5)');
+        el.addEventListener('mouseleave', () => cur.querySelector('.cursor-dot').style.transform = 'translate(-50%,-50%) scale(1)');
+      });
+    }
+
   } // end runEntrance
 
 })();
