@@ -112,6 +112,19 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
 .d-stepup{font-family:var(--mono);font-size:clamp(.35rem,.6vw,.5rem);letter-spacing:.35em;
   text-transform:uppercase;writing-mode:vertical-rl;color:var(--yellow);opacity:.1;bottom:20%;left:2%}
 
+/* HANDS */
+.deco-hand{bottom:10px;height:clamp(300px,45vh,550px);z-index:4;transform-origin:bottom center}
+.hand-left{left:16%;animation:floatHandLeft 7s ease-in-out infinite alternate}
+.hand-right{right:16%;animation:floatHandRight 7.5s ease-in-out infinite alternate-reverse}
+@keyframes floatHandLeft{
+  0%{transform:scaleX(-1) translateY(0) rotate(-3deg)}
+  100%{transform:scaleX(-1) translateY(-20px) rotate(3deg)}
+}
+@keyframes floatHandRight{
+  0%{transform:translateY(0) rotate(-3deg)}
+  100%{transform:translateY(-20px) rotate(3deg)}
+}
+
 /* === BOXES WRAPPER — desktop: invisible === */
 .boxes-scroll{position:absolute;inset:0;pointer-events:none}
 .boxes-scroll .box{pointer-events:auto}
