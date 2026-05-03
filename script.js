@@ -119,7 +119,17 @@
   gsap.set('.subtitle', { opacity: 0 });
   gsap.set('.big-face', { opacity: 0 });
   gsap.set('.box', { opacity: 0 });
+
+  // Store original opacity for decos before hiding them (fixes Cloudflare getComputedStyle crash and opacity bug)
+  document.querySelectorAll('.deco').forEach(el => {
+    try {
+      if (el && el.nodeType === 1) {
+        el.dataset.origOp = window.getComputedStyle(el).opacity;
+      }
+    } catch(e) {}
+  });
   gsap.set('.deco', { opacity: 0 });
+
   gsap.set('.face', { opacity: 0 });
   gsap.set('.event-date', { opacity: 0 });
   gsap.set('.buy-btn', { opacity: 0 });
@@ -164,7 +174,14 @@
       tl.to(b, { opacity: 1, x: 0, y: 0, scale: 1, duration: .6, ease: 'back.out(1.4)' }, 0.4 + i * .06);
     });
     // Decos fade in
-    tl.to('.deco', { opacity: (i, el) => parseFloat(getComputedStyle(el).opacity) || .3, stagger: .05, duration: .4 }, '-=.3');
+    tl.to('.deco', { 
+      opacity: (i, el) => {
+        try { return parseFloat(el.dataset.origOp) || 0.3; } 
+        catch(e) { return 0.3; }
+      }, 
+      stagger: .05, 
+      duration: .4 
+    }, '-=.3');
     // Faces pop in
     document.querySelectorAll('.face').forEach(f => {
       const isFlipped = f.classList.contains('face--inv');
