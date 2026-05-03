@@ -67,6 +67,30 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
 .face{width:clamp(40px,5.5vw,70px);height:auto;transform:rotate(var(--fr,0deg));
   filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));pointer-events:auto;cursor:pointer}
 .face:hover{cursor:grab}
+.big-face-wrap{position:absolute;left:var(--bx);top:var(--by);width:var(--bs);height:auto;
+  transform:rotate(var(--br,0deg));z-index:3;pointer-events:none}
+.big-face-wrap .big-face{position:relative;left:0;top:0;width:100%;pointer-events:auto}
+.chat-bubble{position:absolute;bottom:85%;left:50%;transform:translateX(-50%) scale(0);
+  background:var(--paper);color:var(--bg);padding:12px 24px;border-radius:18px;
+  font-family:var(--mono);font-size:clamp(.8rem,1.4vw,1.1rem);font-weight:800;
+  white-space:nowrap;pointer-events:auto;z-index:100;transform-origin:bottom center;
+  filter:drop-shadow(0 6px 16px rgba(0,0,0,.5));border:2px solid var(--bg);
+  cursor:pointer;transition:transform .2s, background .2s, filter .2s}
+.chat-bubble:hover{background:#fff;filter:drop-shadow(0 8px 24px rgba(0,0,0,.6))}
+.chat-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border-width:10px 10px 0 10px;border-style:solid;border-color:var(--paper) transparent transparent transparent;
+  transition:border-color .2s}
+.chat-bubble:hover::after{border-top-color:#fff}
+.chat-bubble.side{left:105%;top:60%;bottom:auto;transform:translateY(-50%) scale(0);transform-origin:left center}
+.chat-bubble.side:hover{transform:translateY(-50%) scale(1.05)}
+.chat-bubble.side::after{top:50%;left:-20px;transform:translateY(-50%);
+  border-width:10px 10px 10px 0;border-color:transparent var(--paper) transparent transparent}
+.chat-bubble.side:hover::after{border-right-color:#fff}
+
+.chat-bubble .indicator{position:absolute;bottom:8px;right:10px;font-size:.6rem;opacity:0;
+  animation:bubble-blink .8s infinite alternate}
+.chat-bubble.has-more .indicator{opacity:1}
+@keyframes bubble-blink { from { opacity: 0 } to { opacity: 1 } }
 
 
 /* EVENT DATE */
