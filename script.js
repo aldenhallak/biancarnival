@@ -254,6 +254,40 @@
     ov.addEventListener('click', e => { if (e.target === ov || e.target === ov.querySelector('::before')) closeOv() });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOv() });
 
+    // MOBILE SCROLL CENTER CARD
+    const boxesScroll = document.querySelector('.boxes-scroll');
+    if (boxesScroll && window.innerWidth <= 700) {
+      function updateCenterCard() {
+        const center = window.innerWidth / 2;
+        let closest = null;
+        let minDiff = Infinity;
+        boxes.forEach(box => {
+          const rect = box.getBoundingClientRect();
+          const boxCenter = rect.left + rect.width / 2;
+          const diff = Math.abs(center - boxCenter);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closest = box;
+          }
+        });
+        boxes.forEach(box => {
+          const rot = parseFloat(getComputedStyle(box).getPropertyValue('--rot')) || 0;
+          if (box === closest) {
+            gsap.to(box, { scale: 1.05, rotation: rot, zIndex: 30, duration: 0.3, overwrite: 'auto' });
+          } else {
+            gsap.to(box, { scale: 0.9, rotation: rot, zIndex: 20, duration: 0.3, overwrite: 'auto' });
+          }
+        });
+      }
+      
+      // Let entrance animations finish before applying scroll logic
+      setTimeout(() => {
+        updateCenterCard();
+        boxesScroll.addEventListener('scroll', updateCenterCard);
+        window.addEventListener('resize', updateCenterCard);
+      }, 1200);
+    }
+
     // Cursor hover states
     if (isFine) {
       document.querySelectorAll('.box,.ov-x').forEach(el => {
