@@ -126,12 +126,28 @@
   gsap.set('.cal-btn', { opacity: 0 });
   gsap.set('.foot', { opacity: 0 });
 
+  // Center title on mobile initially
+  if (window.innerWidth <= 700) {
+    const title = document.querySelector('.title');
+    if (title) {
+      const rect = title.getBoundingClientRect();
+      const offset = (window.innerHeight / 2) - (rect.height / 2) - rect.top;
+      gsap.set('.title', { y: offset });
+    }
+  }
+
   // === ENTRANCE (runs after curtain) ===
   // Title is already visible behind curtains — only animate everything else
   function runEntrance() {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    
+    // Move title up on mobile
+    if (window.innerWidth <= 700) {
+      tl.to('.title', { y: 0, duration: 1, ease: 'power2.inOut' }, 0);
+    }
+
     // Subtitle fades in
-    tl.to('.subtitle', { opacity: .5, duration: .5, delay: .1 });
+    tl.to('.subtitle', { opacity: .5, duration: .5, delay: .1 }, 0);
     // Big faces drop in
     const bigFaces = gsap.utils.toArray('.big-face');
     bigFaces.forEach((f, i) => {
