@@ -475,12 +475,15 @@
       document.body.appendChild(hoverFaceR);
       gsap.set(hoverFaceR, { opacity: 0, scale: 0.8 });
 
+      const restingFaces = { left: [], right: [] };
+
       function getPalmPos(hand) {
         const rect = hand.getBoundingClientRect();
         return { x: rect.left + rect.width / 2, y: rect.top + rect.height * 0.38 };
       }
 
-      function showHover(hand, faceEl) {
+      function showHover(hand, faceEl, side) {
+        if (restingFaces[side].length > 0) return;
         const pos = getPalmPos(hand);
         gsap.to(faceEl, {
           left: pos.x - 27, top: pos.y - 27,
@@ -493,12 +496,12 @@
         gsap.to(faceEl, { opacity: 0, scale: 0.6, duration: 0.2, overwrite: true });
       }
 
-      handLeft.addEventListener('mouseenter', () => showHover(handLeft, hoverFaceL));
+      handLeft.addEventListener('mouseenter', () => showHover(handLeft, hoverFaceL, 'left'));
       handLeft.addEventListener('mouseleave', () => hideHover(hoverFaceL));
-      handRight.addEventListener('mouseenter', () => showHover(handRight, hoverFaceR));
+      handRight.addEventListener('mouseenter', () => showHover(handRight, hoverFaceR, 'right'));
       handRight.addEventListener('mouseleave', () => hideHover(hoverFaceR));
 
-      const restingFaces = { left: [], right: [] };
+
 
       function juggleTo(fromHand, toHand, toSide) {
         const fromSide = toSide === 'right' ? 'left' : 'right';
@@ -510,6 +513,12 @@
           face = restingFaces[fromSide].pop();
           startY = parseFloat(face.style.top) || (getPalmPos(fromHand).y - 27);
           gsap.killTweensOf(face);
+          
+          // If now empty, ensure preview appears immediately if still hovering
+          if (restingFaces[fromSide].length === 0) {
+            if (fromSide === 'left') showHover(handLeft, hoverFaceL, 'left');
+            else showHover(handRight, hoverFaceR, 'right');
+          }
         } else {
           // Spawn a new permanent face
           face = document.createElement('img');
@@ -534,6 +543,9 @@
         const tl = gsap.timeline({
           onComplete: () => {
             restingFaces[toSide].push(face);
+            // If a head just landed, hide the preview face
+            if (toSide === 'left') hideHover(hoverFaceL);
+            else hideHover(hoverFaceR);
           }
         });
 
