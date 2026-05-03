@@ -212,16 +212,10 @@
 
     // FACE SPIN — physics simulation
     const MIN_VEL = 0.3;    // deg/frame threshold to stop
-    document.querySelectorAll('.face,.big-face,.ch').forEach(f => {
-      const isLetter = f.classList.contains('ch');
-      const friction = isLetter ? 0.94 : 0.985;
-      const maxVel = isLetter ? 20 : 40;
-      const baseImpulse = isLetter ? 300 : 800;
-      const randImpulse = isLetter ? 600 : 1200;
-
+    document.querySelectorAll('.face,.big-face').forEach(f => {
       let vel = 0, spinning = false;
       function tick() {
-        vel *= friction;
+        vel *= 0.985;
         const cur = gsap.getProperty(f, 'rotation');
         gsap.set(f, { rotation: cur + vel });
         if (Math.abs(vel) > MIN_VEL) {
@@ -233,10 +227,58 @@
       f.addEventListener('click', e => {
         e.stopPropagation();
         const dir = Math.random() > .5 ? 1 : -1;
-        vel += dir * (baseImpulse + Math.random() * randImpulse);
-        vel = Math.min(Math.max(vel, -maxVel), maxVel);
+        vel += dir * (800 + Math.random() * 1200);
+        vel = Math.min(Math.max(vel, -40), 40);
         if (!spinning) { spinning = true; requestAnimationFrame(tick); }
         playWoosh();
+      });
+    });
+
+    // LETTERS EXPLODE
+    const letters = document.querySelectorAll('.ch');
+    let explodedCount = 0;
+    
+    letters.forEach(c => {
+      c._exploded = false;
+      c.addEventListener('click', e => {
+        e.stopPropagation();
+        if (c._exploded) return;
+        c._exploded = true;
+        explodedCount++;
+        
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 300 + Math.random() * 400;
+        
+        gsap.to(c, {
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist - 200, // Bias upwards
+          rotation: `+=${(Math.random() - 0.5) * 1440}`,
+          scale: 0,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          pointerEvents: 'none'
+        });
+        
+        playWoosh();
+        
+        if (explodedCount === letters.length) {
+          setTimeout(() => {
+            explodedCount = 0;
+            gsap.set(letters, { clearProps: 'transform,opacity,pointerEvents' });
+            letters.forEach(l => l._exploded = false);
+            
+            gsap.from(letters, {
+              scale: 0,
+              opacity: 0,
+              y: 40,
+              duration: 0.8,
+              stagger: 0.05,
+              ease: 'back.out(1.5)'
+            });
+            playWoosh();
+          }, 1500);
+        }
       });
     });
 
