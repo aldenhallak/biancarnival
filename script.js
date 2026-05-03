@@ -263,6 +263,34 @@
         playWoosh();
         
         if (explodedCount === letters.length) {
+          // Rain Bianca's face
+          const numFaces = window.innerWidth <= 700 ? 35 : 70;
+          for (let i = 0; i < numFaces; i++) {
+            const face = document.createElement('img');
+            face.src = 'biancasface.png';
+            face.style.position = 'fixed';
+            face.style.zIndex = '9999';
+            face.style.pointerEvents = 'none';
+            
+            const size = 40 + Math.random() * 70;
+            face.style.width = `${size}px`;
+            face.style.height = 'auto';
+            face.style.left = `${Math.random() * 100}vw`;
+            face.style.top = `${-150 - Math.random() * 300}px`;
+            
+            document.body.appendChild(face);
+            
+            gsap.to(face, {
+              y: window.innerHeight + 500,
+              x: `+=${(Math.random() - 0.5) * 300}`,
+              rotation: (Math.random() - 0.5) * 1080,
+              duration: 2 + Math.random() * 2.5,
+              ease: 'power1.in',
+              delay: Math.random() * 0.8,
+              onComplete: () => face.remove()
+            });
+          }
+
           setTimeout(() => {
             explodedCount = 0;
             gsap.set(letters, { clearProps: 'transform,opacity,pointerEvents' });
@@ -277,7 +305,7 @@
               ease: 'back.out(1.5)'
             });
             playWoosh();
-          }, 1500);
+          }, 3500); // Delayed reset slightly to match the rain duration
         }
       });
     });
