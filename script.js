@@ -19,7 +19,7 @@
     filt.frequency.exponentialRampToValueAtTime(200,ctx.currentTime+dur);
     // Gain envelope
     const gain=ctx.createGain();
-    gain.gain.setValueAtTime(0.15,ctx.currentTime);
+    gain.gain.setValueAtTime(0.3,ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
     src.connect(filt);filt.connect(gain);gain.connect(ctx.destination);
     src.start();src.stop(ctx.currentTime+dur);
@@ -30,10 +30,10 @@
     const dur=0.04;
     const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
     const d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.008));
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.015));
     const src=ctx.createBufferSource();src.buffer=buf;
-    const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800;
-    const gain=ctx.createGain();gain.gain.value=0.25;
+    const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=600;
+    const gain=ctx.createGain();gain.gain.value=0.1;
     src.connect(hp);hp.connect(gain);gain.connect(ctx.destination);
     src.start();src.stop(ctx.currentTime+dur);
   }
@@ -45,6 +45,27 @@
   if(isFine){
     document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;gsap.set(cur,{x:mx,y:my})});
   }
+
+  // BACKGROUND MUSIC
+  const bgMusic=document.getElementById('bg-music');
+  const muteBtn=document.getElementById('mute-btn');
+  bgMusic.volume=0.4;
+  let musicStarted=false;
+  function startMusic(){
+    if(musicStarted)return;
+    musicStarted=true;
+    bgMusic.play().catch(()=>{});
+  }
+  // Start on first interaction (browser autoplay policy)
+  document.addEventListener('click',startMusic,{once:true});
+  document.addEventListener('touchstart',startMusic,{once:true});
+  // Mute toggle
+  muteBtn.addEventListener('click',e=>{
+    e.stopPropagation();
+    if(!musicStarted){startMusic();}
+    bgMusic.muted=!bgMusic.muted;
+    muteBtn.textContent=bgMusic.muted?'🔇':'🔊';
+  });
 
   // ENTRANCE — staggered
   const tl=gsap.timeline({defaults:{ease:'power3.out'}});
