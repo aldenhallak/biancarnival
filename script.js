@@ -49,7 +49,7 @@
   // BACKGROUND MUSIC
   const bgMusic=document.getElementById('bg-music');
   const muteBtn=document.getElementById('mute-btn');
-  bgMusic.volume=0.4;
+  bgMusic.volume=0.15;
   let musicStarted=false;
   function startMusic(){
     if(musicStarted)return;
