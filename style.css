@@ -182,7 +182,8 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
 .ov.active{pointer-events:auto;opacity:1}
 .ov::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px)}
 .ov-card{position:relative;z-index:2;max-width:520px;width:88%;padding:36px 32px;
-  background:var(--dark);border:1px solid rgba(240,232,216,.08);border-radius:4px}
+  background:var(--dark);border:1px solid rgba(240,232,216,.08);border-radius:4px;
+  max-height:85vh;overflow-y:auto}
 .ov.active .ov-card{transform:scale(1) translateY(0);opacity:1}
 .ov-card h2{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,3vw,2rem);color:var(--paper);margin-bottom:14px}
 .ov-card p,.ov-card ol{font-size:.9rem;line-height:1.75;color:var(--paper);opacity:.8}
