@@ -476,6 +476,9 @@
       gsap.set(hoverFaceR, { opacity: 0, scale: 0.8 });
 
       const restingFaces = { left: [], right: [] };
+      let lastJuggleTime = 0;
+      let hoveredHand = null; // 'left' or 'right'
+      const JUGGLE_COOLDOWN = 500;
 
       function getPalmPos(hand) {
         const rect = hand.getBoundingClientRect();
@@ -484,6 +487,7 @@
 
       function showHover(hand, faceEl, side) {
         if (restingFaces[side].length > 0) return;
+        if (Date.now() - lastJuggleTime < JUGGLE_COOLDOWN) return;
         const pos = getPalmPos(hand);
         gsap.to(faceEl, {
           left: pos.x - 27, top: pos.y - 27,
@@ -496,19 +500,35 @@
         gsap.to(faceEl, { opacity: 0, scale: 0.6, duration: 0.2, overwrite: true });
       }
 
-      handLeft.addEventListener('mouseenter', () => showHover(handLeft, hoverFaceL, 'left'));
-      handLeft.addEventListener('mouseleave', () => hideHover(hoverFaceL));
-      handRight.addEventListener('mouseenter', () => showHover(handRight, hoverFaceR, 'right'));
-      handRight.addEventListener('mouseleave', () => hideHover(hoverFaceR));
+      handLeft.addEventListener('mouseenter', () => { hoveredHand = 'left'; showHover(handLeft, hoverFaceL, 'left'); });
+      handLeft.addEventListener('mouseleave', () => { hoveredHand = null; hideHover(hoverFaceL); });
+      handRight.addEventListener('mouseenter', () => { hoveredHand = 'right'; showHover(handRight, hoverFaceR, 'right'); });
+      handRight.addEventListener('mouseleave', () => { hoveredHand = null; hideHover(hoverFaceR); });
 
 
 
       function juggleTo(fromHand, toHand, toSide) {
         const fromSide = toSide === 'right' ? 'left' : 'right';
+        const hasExisting = restingFaces[fromSide].length > 0;
+
+        // Cooldown only applies to spawning NEW heads
+        if (!hasExisting && (Date.now() - lastJuggleTime < JUGGLE_COOLDOWN)) return;
+
+        if (!hasExisting) {
+          lastJuggleTime = Date.now();
+          // Hide previews only on new spawn cooldown
+          hideHover(hoverFaceL);
+          hideHover(hoverFaceR);
+          setTimeout(() => {
+            if (hoveredHand === 'left') showHover(handLeft, hoverFaceL, 'left');
+            if (hoveredHand === 'right') showHover(handRight, hoverFaceR, 'right');
+          }, JUGGLE_COOLDOWN);
+        }
+
         let face;
         let startY;
         
-        if (restingFaces[fromSide].length > 0) {
+        if (hasExisting) {
           // Toss an existing face that's already in the hand
           face = restingFaces[fromSide].pop();
           startY = parseFloat(face.style.top) || (getPalmPos(fromHand).y - 27);
