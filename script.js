@@ -148,7 +148,7 @@
       tl.to(b, { opacity: 1, x: 0, y: 0, scale: 1, duration: .6, ease: 'back.out(1.4)' }, 0.4 + i * .06);
     });
     // Decos fade in
-    tl.to('.deco', { opacity: el => parseFloat(getComputedStyle(el).opacity) || .3, stagger: .05, duration: .4 }, '-=.3');
+    tl.to('.deco', { opacity: (i, el) => parseFloat(getComputedStyle(el).opacity) || .3, stagger: .05, duration: .4 }, '-=.3');
     // Faces pop in
     document.querySelectorAll('.face').forEach(f => {
       const isFlipped = f.classList.contains('face--inv');
