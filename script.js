@@ -338,13 +338,22 @@
 
     let lastJuggleReactionTime = 0;
     const JUGGLE_REACTION_COOLDOWN = 1500;
+    let totalJuggleReactions = 0;
+    const MAX_JUGGLE_REACTIONS = 10;
+    let juggleDialogDisabled = false;
 
     function showJuggleReaction() {
-      if (isTyping) return;
+      if (isTyping || juggleDialogDisabled) return;
       if (Date.now() - lastJuggleReactionTime < JUGGLE_REACTION_COOLDOWN) return;
       lastJuggleReactionTime = Date.now();
-      const r = juggleReactions[Math.floor(Math.random() * juggleReactions.length)];
-      typeWriter(r);
+      totalJuggleReactions++;
+      if (totalJuggleReactions >= MAX_JUGGLE_REACTIONS) {
+        typeWriter("Ok I'll shut up now...");
+        juggleDialogDisabled = true;
+      } else {
+        const r = juggleReactions[Math.floor(Math.random() * juggleReactions.length)];
+        typeWriter(r);
+      }
     }
 
     bubble.addEventListener('click', (e) => {
