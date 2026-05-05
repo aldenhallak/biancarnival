@@ -277,8 +277,12 @@
       osc.stop(t + 0.04);
     }
 
+    let typeWriterTimeout = null;
+
     function typeWriter(text, i = 0) {
       if (i === 0) {
+        // Cancel any in-progress typing
+        if (typeWriterTimeout) { clearTimeout(typeWriterTimeout); typeWriterTimeout = null; }
         const textNode = document.createTextNode('');
         bubble.innerHTML = '';
         bubble.appendChild(textNode);
@@ -297,9 +301,10 @@
       if (i < text.length) {
         bubble.firstChild.textContent += text.charAt(i);
         playTextBlip();
-        setTimeout(() => typeWriter(text, i + 1), 50);
+        typeWriterTimeout = setTimeout(() => typeWriter(text, i + 1), 50);
       } else {
         isTyping = false;
+        typeWriterTimeout = null;
         bubble.classList.add('has-more');
       }
     }
@@ -355,6 +360,27 @@
         typeWriter(r);
       }
     }
+
+    // === TICKET-BUYING DIALOG ===
+    const ticketLines = [
+      "You're buying a ticket?!",
+      "You won't regret this.",
+      "Best decision you've made all week.",
+      "Tell your friends. Or don't. More for us.",
+      "This is going to be so good.",
+      "I'm so excited you're coming!",
+      "You're going to have the time of your life.",
+      "Bring snacks. Actually, don't. We have snacks.",
+      "One ticket? You should get two.",
+      "A wise investment.",
+      "I knew you had taste.",
+    ];
+
+    window._showTicketDialog = function () {
+      isTyping = false; // Force through even if welcome dialog is still going
+      const line = ticketLines[Math.floor(Math.random() * ticketLines.length)];
+      typeWriter(line);
+    };
 
     bubble.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -773,5 +799,42 @@
     }
 
   } // end runEntrance
+
+  // === TICKET TAILOR: OPEN WIDGET, BIANCA REACTS WHEN IT CLOSES ===
+  const TT_URL = 'https://www.tickettailor.com/events/abovethewaist1/2198341';
+  const TT_ORG = 'abovethewaist1';
+  const TT_EVT = 2198341;
+
+  function openTicketWidget(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (typeof TTWidget !== 'undefined') {
+      TTWidget.loadEvent(TT_ORG, TT_EVT, 'widget');
+
+      // Watch for the widget iframe to be removed (user closed it or finished)
+      const closeObserver = new MutationObserver(mutations => {
+        for (const m of mutations) {
+          for (const node of m.removedNodes) {
+            if (node.nodeType === 1 && node.tagName === 'IFRAME' && node.src && node.src.includes('tickettailor')) {
+              closeObserver.disconnect();
+              if (window._showTicketDialog) window._showTicketDialog();
+            }
+          }
+        }
+      });
+      closeObserver.observe(document.body, { childList: true, subtree: true });
+    } else {
+      window.open(TT_URL, '_blank');
+    }
+  }
+
+  document.getElementById('buy-btn').addEventListener('click', openTicketWidget);
+
+  // Also handle the ticket link inside the overlay card
+  document.addEventListener('click', e => {
+    const link = e.target.closest('.tt-link');
+    if (link) openTicketWidget(e);
+  });
 
 })();

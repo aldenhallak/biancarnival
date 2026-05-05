@@ -264,6 +264,8 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
   color:var(--paper);opacity:.12;white-space:nowrap;pointer-events:auto}
 .foot a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:opacity .2s,border-color .2s}
 .foot a:hover{opacity:1;border-bottom-color:currentColor}
+
+
 /* ============================================
    MOBILE — horizontal swipe card strip
    ============================================ */
