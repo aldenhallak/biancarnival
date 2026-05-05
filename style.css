@@ -50,6 +50,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
   pointer-events:none;filter:url(#stamp)}
 .ch{display:inline-block;color:var(--c);transform:rotate(var(--r));pointer-events:auto;cursor:pointer}
 .ch svg{height:1em;width:auto;display:block;fill:currentColor}
+.word{display:flex;gap:clamp(1px,.15vw,3px)}
 .ch--o svg{fill:none;stroke:currentColor;stroke-width:3}
 .subtitle{position:absolute;top:calc(46% + clamp(30px,4.5vw,50px));left:50%;transform:translateX(-50%);
   font-family:var(--serif);font-size:clamp(.7rem,1.3vw,1rem);color:var(--paper);opacity:.5;
@@ -276,9 +277,6 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
   .title{position:relative;top:auto;left:auto;transform:none;
     font-size:clamp(1.8rem,11vw,3rem);flex-wrap:wrap;justify-content:center;
     white-space:normal;margin:16px auto 0;padding:0 12px}
-  .title .ch:nth-child(6) {
-    margin-right: 12px; /* Add space between BIANCA and RNIVAL */
-  }
   .subtitle{position:relative;top:auto;left:auto;transform:none;
     margin:4px auto 8px;font-size:.72rem}
 
