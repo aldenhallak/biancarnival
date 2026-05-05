@@ -274,8 +274,11 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
   .stage{display:flex;flex-direction:column;height:100vh;height:100dvh;padding:0;overflow:hidden}
 
   .title{position:relative;top:auto;left:auto;transform:none;
-    font-size:clamp(2rem,13vw,3.4rem);flex-wrap:wrap;justify-content:center;
+    font-size:clamp(1.8rem,11vw,3rem);flex-wrap:wrap;justify-content:center;
     white-space:normal;margin:16px auto 0;padding:0 12px}
+  .title .ch:nth-child(6) {
+    margin-right: 12px; /* Add space between BIANCA and RNIVAL */
+  }
   .subtitle{position:relative;top:auto;left:auto;transform:none;
     margin:4px auto 8px;font-size:.72rem}
 
@@ -304,22 +307,31 @@ body{font-family:var(--body);background:var(--bg);color:var(--paper);cursor:none
     display:flex!important;flex:1 1 auto;
     overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
-    padding:16px 17.5vw;align-items:center;gap:0;
+    padding:16px 15vw;align-items:center;gap:0;
     pointer-events:auto!important}
   .boxes-scroll::-webkit-scrollbar{display:none}
 
   .box{position:relative!important;top:auto!important;left:auto!important;right:auto!important;
-    bottom:auto!important;flex:0 0 65vw;
+    bottom:auto!important;flex:0 0 68vw;
     scroll-snap-align:center;
     display:flex!important;flex-direction:column;justify-content:center;align-items:flex-start;
-    margin:0 -10px;padding:30px 20px 24px;
+    margin:0 -25px;padding:30px 20px 24px;
     clip-path:none!important;pointer-events:auto!important;
-    aspect-ratio:1 / 1.4}
+    aspect-ratio:1 / 1.4;
+    transform: rotate(var(--rot)) translateY(var(--m-offset, 0px)) !important;}
   .box::before{top:-16px;height:32px;width:clamp(50px,35%,90px)}
+
+  /* Add alternating vertical offsets to break the grid */
+  .box:nth-child(odd) {
+    --m-offset: -8px;
+  }
+  .box:nth-child(even) {
+    --m-offset: 8px;
+  }
 
   .b-n{font-size:.8rem;margin-bottom:8px}
   .b-t{font-size:clamp(1.5rem,7vw,2.2rem)}
-  .b-lineup{flex:0 0 65vw;max-width:65vw}
+  .b-lineup{flex:0 0 68vw;max-width:68vw}
   .b-loc{background:var(--bg)!important}
 
   .ov-card{width:92%;padding:28px 20px}
